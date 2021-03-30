@@ -45,7 +45,7 @@ Step
 - created_at (datetime)
 - updated_at (datetime)
 
-Ban (TODO!)
+Ban
 - id (id)
 - user_id (User)
 - admin_id (User)
