@@ -40,4 +40,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function gamesWhereFirstPlayer() {
+        return $this->hasMany(Game::class, 'first_player');
+    }
+
+    public function gamesWhereSecondPlayer() {
+        return $this->hasMany(Game::class, 'second_player');
+    }
+
+    public function games() {
+        return $this->gamesWhereFirstPlayer->merge($this->gamesWhereSecondPlayer);
+    }
+
+    public function winnedGames() {
+        return $this->hasMany(Game::class, 'winned_by');
+    }
 }
