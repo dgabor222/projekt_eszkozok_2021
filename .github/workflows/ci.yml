@@ -9,10 +9,11 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./OX
     steps:
       - uses: actions/checkout@v2
-      - name: CD to Laravel directory
-        run: cd ./OX
       - name: Make .env file
         run: cp .env.example .env
       - name: Install Composer dependencies
