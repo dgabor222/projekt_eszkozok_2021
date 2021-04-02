@@ -1,0 +1,25 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'OX/**'
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: CD to Laravel directory
+        run: cd ./OX
+      - name: Make .env file
+        run: cp .env.example .env
+      - name: Install Composer dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Generate app key
+        run: php artisan key:generate
+      - name: Set directory permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Run PHPUnit tests
+        run: php artisan test
