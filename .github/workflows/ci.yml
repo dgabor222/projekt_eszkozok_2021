@@ -1,8 +1,6 @@
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
     paths:
       - 'OX/**'
 
@@ -24,3 +22,4 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
       - name: Run PHPUnit tests
         run: php artisan test
+  
