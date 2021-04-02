@@ -14,6 +14,21 @@ class Game extends Model
         'ended_at'   => 'datetime',
     ];
 
+    protected $attributes = [
+        'map_width' => 12,
+        'map_height' => 12,
+        'first_symbol' => 'O',
+        'second_symbol' => 'X',
+        'status' => 'WAITING',
+        'created_by' => null,
+        'first_player' => null,
+        'second_player' => null,
+        'latest_player' => null,
+        'winned_by' => null,
+        'started_at' => null,
+        'ended_at' => null,
+     ];
+
     private const FirstPlayerNumber = 1;
     private const SecondPlayerNumber = 6;
 
@@ -81,6 +96,13 @@ class Game extends Model
             }
         });
         return $matrix;
+    }
+
+    public function printMatrix() {
+        $matrix = $this->getMapAsMatrix();
+        for ($i = 0; $i < $this->map_height; $i++) {
+            echo("[" . join(", ", $matrix[$i]) . "]," . PHP_EOL);
+        }
     }
 
     // Lekéri azt a balról jobbra haladó átlót (pongyolán "főátlót"), amelyiknek az adott koordináta is a része.
@@ -156,11 +178,11 @@ class Game extends Model
 
     // Játékos csatlakoztatása.
     public function join(User $player) {
-        if ($this->status !== 'WAITING') return 1;
-        if ($this->isFull()) return 2;
-        if (!$this->first_player) $this->firstPlayer()->associate($player);
-        if (!$this->second_player) $this->secondPlayer()->associate($player);
-        return $this->save();
+        if ($this->status !== 'WAITING') return "InvalidGameStatus";
+        if ($this->isFull()) return "GameIsFull";
+        if (!$this->first_player) return $this->firstPlayer()->associate($player)->save();
+        if (!$this->second_player) return $this->secondPlayer()->associate($player)->save();
+        return false;
     }
 
     // Megadja, hogy egy játékos benne van-e a játékban.

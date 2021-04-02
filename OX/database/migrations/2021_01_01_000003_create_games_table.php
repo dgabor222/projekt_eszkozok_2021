@@ -17,7 +17,7 @@ class CreateGamesTable extends Migration
             $table->id();
             $table->integer('map_width')->default(12);
             $table->integer('map_height')->default(12);
-            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('first_player')->nullable();
             $table->unsignedBigInteger('second_player')->nullable();
             $table->unsignedBigInteger('latest_player')->nullable();
