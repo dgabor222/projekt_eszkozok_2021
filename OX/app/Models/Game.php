@@ -182,11 +182,20 @@ class Game extends Model
     // Lépés megtétele egy adott játékossal egy adott pozícióra.
     public function step(User $player, $row, $col) {
         // Vizsgálni kell a kizáró okokat:
-        if ($this->status !== 'STARTED') return 1;              // Csak elindított játékban lehet lépni.
-        if (!$this->isPlayerInThisGame($player)) return 2;      // Csak olyan játékos léphet, aki részt vesz a játékban.
-        if ($player->is($this->latestPlayer)) return 3;         // Ugyanaz a játékos nem léphet kétszer egymás után.
-        if (!$this->isValidPosition($row, $col)) return 4;      // Nem lehet a játéktéren kívülre lépni.
-        if (!$this->isPositionAvailable($row, $col)) return 5;  // Nem lehet olyan helyre lépni, ahová már valaki lépett korábban.
+        if ($this->status !== 'STARTED')                // Csak elindított játékban lehet lépni.
+            return "InvalidGameStatus";
+
+        if (!$this->isPlayerInThisGame($player))        // Csak olyan játékos léphet, aki részt vesz a játékban.
+            return "InvalidPlayer";
+
+        if ($player->is($this->latestPlayer))           // Ugyanaz a játékos nem léphet kétszer egymás után.
+            return "DuplicatedStep";
+
+        if (!$this->isValidPosition($row, $col))        // Nem lehet a játéktéren kívülre lépni.
+            return "InvalidPosition";
+
+        if (!$this->isPositionAvailable($row, $col))    // Nem lehet olyan helyre lépni, ahová már valaki lépett korábban.
+            return "UnavailablePosition";
 
         // Lépés regisztrálása, majd a legutóbbi játékos frissítése
         $step = new Step;
@@ -194,7 +203,7 @@ class Game extends Model
         $step->player()->associate($player);
         $step->row = $row;
         $step->col = $col;
-        if(!$step->save()) return 6;
+        if(!$step->save()) return "SaveFailed";
 
         $this->updateLatestPlayer($player);
 
@@ -203,38 +212,38 @@ class Game extends Model
         if (Game::checkWin($matrix, $row, $col)) {
             $this->winnedBy()->associate($player);
             $this->end();
-            return 7;
+            return "GameWinned";
         }
         if (Game::checkTie($matrix)) {
             $this->end();
-            return 8;
+            return "GameTied";
         }
 
         // Ezzel csak jelezzük, hogy a lépés sikeres volt.
-        return 0;
+        return true;
     }
 
     // Játék elindítása.
     public function start() {
-        if ($this->status !== 'WAITING') return 1;
-        if (!$this->isFull()) return 2;
+        if ($this->status !== 'WAITING') return "InvalidGameStatus";
+        if (!$this->isFull()) return "MissingPlayers";
 
         $this->started_at = now();
         $this->status = 'STARTED';
-        if (!$this->save()) return 3;
+        if (!$this->save()) return "SaveFailed";
 
-        return 0;
+        return true;
     }
 
-    // Segédfv. a játék befejezéséhez/megszakításához
+    // Segédfv. a játék befejezéséhez/megszakításához.
     private function endWithStatus($status) {
-        if ($this->status !== 'STARTED') return 1;
+        if ($this->status !== 'STARTED') return "InvalidGameStatus";
 
         $this->ended_at = now();
         $this->status = $status;
-        if (!$this->save()) return 3;
+        if (!$this->save()) return "SaveFailed";
 
-        return 0;
+        return true;
     }
 
     // Játék megszakítása (ez nem ugyanaz, mint a sima befejezés, erre van az 'ABANDONED' status).
