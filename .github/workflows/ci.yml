@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run setup
-        run: ./setup_linux.sh
+        run: |
+          chmod +x ./setup_linux.sh
+          ./setup_linux.sh
       - name: Run PHPUnit tests
         run: php artisan test

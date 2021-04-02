@@ -1,3 +1,4 @@
+# Setup
 cp .env.example .env
 php artisan key:generate
 composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist

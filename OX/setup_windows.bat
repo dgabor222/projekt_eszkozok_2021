@@ -1,3 +1,4 @@
+:: Setup
 copy .env.example .env
 call php artisan key:generate
 call composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
