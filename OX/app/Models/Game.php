@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * App\Models\Game
  *
@@ -26,6 +25,9 @@ class Game extends Model
 {
     use HasFactory;
 
+    private const FirstPlayerNumber = 1;
+    private const SecondPlayerNumber = 6;
+
     protected $casts = [
         'started_at' => 'datetime',
         'ended_at'   => 'datetime',
@@ -44,82 +46,11 @@ class Game extends Model
         'winned_by' => null,
         'started_at' => null,
         'ended_at' => null,
-     ];
-
-    private const FirstPlayerNumber = 1;
-    private const SecondPlayerNumber = 6;
-
-    public function createdBy() {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function firstPlayer() {
-        return $this->belongsTo(User::class, 'first_player');
-    }
-
-    public function secondPlayer() {
-        return $this->belongsTo(User::class, 'second_player');
-    }
-
-    public function latestPlayer() {
-        return $this->belongsTo(User::class, 'latest_player');
-    }
-
-    public function winnedBy() {
-        return $this->belongsTo(User::class, 'winned_by');
-    }
-
-    public function steps() {
-        return $this->hasMany(Step::class);
-    }
-
-    // Megmondja, hogy egy pozíció koordinátái a pályán belül vannak-e.
-    private function isValidPosition($row, $col) {
-        return
-            ($row >= 1 && $row <= $this->map_height) &&
-            ($col >= 1 && $col <= $this->map_width);
-    }
-
-    // Megmondja, hogy egy adott pozíció szabad-e még, tehát azt, hogy lépett-e oda valaki.
-    private function isPositionAvailable($row, $col) {
-        return $this->steps()->where(compact('row', 'col'))->count() < 1;
-    }
-
-    // Módosítja a legutóbb lépett játékost.
-    private function updateLatestPlayer(User $player) {
-        $this->latestPlayer()->associate($player);
-        return $this->save();
-    }
+    ];
 
     // Készít egy mátrixot, aminek minden eleme nulla.
     static public function createZeroMatrix($rows, $cols) {
         return array_fill(0, $rows, array_fill(0, $cols, 0));
-    }
-
-    // Lekéri a játékhoz tartozó lépéseket, és oly módon képezi le a játékteret egy mátrixba, hogy az a mező, ahova...
-    //    - még nem léptek, 0 értékű legyen;
-    //    - ahová az első játékos lépett, az 1 legyen;
-    //    - ahová pedig a második játékos lépett, az 6 legyen.
-    public function getMapAsMatrix() {
-        $matrix = Game::createZeroMatrix($this->map_height, $this->map_width);
-        $this->steps->each(function ($step) use (&$matrix) {
-            $player = $step->player;
-            $col = $step->col-1;
-            $row = $step->row-1;
-            if ($player->is($this->firstPlayer)) {
-                $matrix[$row][$col] = self::FirstPlayerNumber;
-            } else if ($player->is($this->secondPlayer)) {
-                $matrix[$row][$col] = self::SecondPlayerNumber;
-            }
-        });
-        return $matrix;
-    }
-
-    public function printMatrix() {
-        $matrix = $this->getMapAsMatrix();
-        for ($i = 0; $i < $this->map_height; $i++) {
-            echo("[" . join(", ", $matrix[$i]) . "]," . PHP_EOL);
-        }
     }
 
     // Lekéri azt a balról jobbra haladó átlót (pongyolán "főátlót"), amelyiknek az adott koordináta is a része.
@@ -193,12 +124,80 @@ class Game extends Model
         return true;
     }
 
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function firstPlayer() {
+        return $this->belongsTo(User::class, 'first_player');
+    }
+
+    public function secondPlayer() {
+        return $this->belongsTo(User::class, 'second_player');
+    }
+
+    public function latestPlayer() {
+        return $this->belongsTo(User::class, 'latest_player');
+    }
+
+    public function winnedBy() {
+        return $this->belongsTo(User::class, 'winned_by');
+    }
+
+    public function steps() {
+        return $this->hasMany(Step::class);
+    }
+
+    // Megmondja, hogy egy pozíció koordinátái a pályán belül vannak-e.
+    private function isValidPosition($row, $col) {
+        return
+            ($row >= 1 && $row <= $this->map_height) &&
+            ($col >= 1 && $col <= $this->map_width);
+    }
+
+    // Megmondja, hogy egy adott pozíció szabad-e még, tehát azt, hogy lépett-e oda valaki.
+    private function isPositionAvailable($row, $col) {
+        return $this->steps()->where(compact('row', 'col'))->count() < 1;
+    }
+
+    // Módosítja a legutóbb lépett játékost.
+    private function updateLatestPlayer(User $player) {
+        $this->latestPlayer()->associate($player);
+        return $this->save();
+    }
+
+    // Lekéri a játékhoz tartozó lépéseket, és oly módon képezi le a játékteret egy mátrixba, hogy az a mező, ahova...
+    //    - még nem léptek, 0 értékű legyen;
+    //    - ahová az első játékos lépett, az 1 legyen;
+    //    - ahová pedig a második játékos lépett, az 6 legyen.
+    public function getMapAsMatrix() {
+        $matrix = Game::createZeroMatrix($this->map_height, $this->map_width);
+        $this->steps->each(function ($step) use (&$matrix) {
+            $player = $step->player;
+            $col = $step->col-1;
+            $row = $step->row-1;
+            if ($player->is($this->firstPlayer)) {
+                $matrix[$row][$col] = self::FirstPlayerNumber;
+            } else if ($player->is($this->secondPlayer)) {
+                $matrix[$row][$col] = self::SecondPlayerNumber;
+            }
+        });
+        return $matrix;
+    }
+
+    public function printMatrix() {
+        $matrix = $this->getMapAsMatrix();
+        for ($i = 0; $i < $this->map_height; $i++) {
+            echo("[" . join(", ", $matrix[$i]) . "]," . PHP_EOL);
+        }
+    }
+
     // Játékos csatlakoztatása.
     public function join(User $player) {
         if ($this->status !== 'WAITING') return "InvalidGameStatus";
         if ($this->isFull()) return "GameIsFull";
-        if (!$this->first_player) return $this->firstPlayer()->associate($player)->save();
-        if (!$this->second_player) return $this->secondPlayer()->associate($player)->save();
+        if (! $this->first_player) return $this->firstPlayer()->associate($player)->save();
+        if (! $this->second_player) return $this->secondPlayer()->associate($player)->save();
         return false;
     }
 
@@ -214,7 +213,7 @@ class Game extends Model
 
     // Játékos kiléptetése.
     public function leave(User $player) {
-        if (!$this->isPlayerInThisGame($player)) return 1;
+        if (! $this->isPlayerInThisGame($player)) return 1;
         return $this->abandon();
     }
 
@@ -224,16 +223,16 @@ class Game extends Model
         if ($this->status !== 'STARTED')                // Csak elindított játékban lehet lépni.
             return "InvalidGameStatus";
 
-        if (!$this->isPlayerInThisGame($player))        // Csak olyan játékos léphet, aki részt vesz a játékban.
+        if (! $this->isPlayerInThisGame($player))        // Csak olyan játékos léphet, aki részt vesz a játékban.
             return "InvalidPlayer";
 
         if ($player->is($this->latestPlayer))           // Ugyanaz a játékos nem léphet kétszer egymás után.
             return "DuplicatedStep";
 
-        if (!$this->isValidPosition($row, $col))        // Nem lehet a játéktéren kívülre lépni.
+        if (! $this->isValidPosition($row, $col))        // Nem lehet a játéktéren kívülre lépni.
             return "InvalidPosition";
 
-        if (!$this->isPositionAvailable($row, $col))    // Nem lehet olyan helyre lépni, ahová már valaki lépett korábban.
+        if (! $this->isPositionAvailable($row, $col))    // Nem lehet olyan helyre lépni, ahová már valaki lépett korábban.
             return "UnavailablePosition";
 
         // Lépés regisztrálása, majd a legutóbbi játékos frissítése
@@ -242,7 +241,7 @@ class Game extends Model
         $step->player()->associate($player);
         $step->row = $row;
         $step->col = $col;
-        if(!$step->save()) return "SaveFailed";
+        if(! $step->save()) return "SaveFailed";
 
         $this->updateLatestPlayer($player);
 
@@ -265,11 +264,11 @@ class Game extends Model
     // Játék elindítása.
     public function start() {
         if ($this->status !== 'WAITING') return "InvalidGameStatus";
-        if (!$this->isFull()) return "MissingPlayers";
+        if (! $this->isFull()) return "MissingPlayers";
 
         $this->started_at = now();
         $this->status = 'STARTED';
-        if (!$this->save()) return "SaveFailed";
+        if (! $this->save()) return "SaveFailed";
 
         return true;
     }
@@ -280,7 +279,7 @@ class Game extends Model
 
         $this->ended_at = now();
         $this->status = $status;
-        if (!$this->save()) return "SaveFailed";
+        if (! $this->save()) return "SaveFailed";
 
         return true;
     }

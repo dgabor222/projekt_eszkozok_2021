@@ -5,7 +5,7 @@ on:
       - 'OX/**'
 
 jobs:
-  # 1. lepes: Statikus analizis futtatasa.
+  # 1/1. lepes: Statikus analizis futtatasa.
   static-analysis:
     runs-on: ubuntu-latest
     defaults:
@@ -22,9 +22,26 @@ jobs:
           chmod +x ./vendor/bin/phpstan
           ./vendor/bin/phpstan analyse --no-interaction --memory-limit=1G
 
+  # 1/2. lepes: Linter futtatasa.
+  linter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./OX
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run setup
+        run: |
+          chmod +x ./setup_linux.sh
+          ./setup_linux.sh
+      - name: Run static analysis
+        run: |
+          chmod +x ./vendor/bin/tlint
+          ./vendor/bin/tlint lint app --no-interaction
+
   # 2. lepes: Unit testek futtatasa.
-  laravel-tests:
-    needs: static-analysis
+  unit-tests:
+    needs: [static-analysis, linter]
     runs-on: ubuntu-latest
     defaults:
       run:

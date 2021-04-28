@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -98,7 +97,7 @@ class User extends Authenticatable
         $game = new Game;
         $game->createdBy()->associate($this);
         $game->firstPlayer()->associate($this);
-        if (!$game->save()) return "SaveFailed";
+        if (! $game->save()) return "SaveFailed";
 
         $this->refresh();
         return true;
@@ -118,7 +117,7 @@ class User extends Authenticatable
     // Aktuális játék elhagyása, amennyiben van olyan.
     public function leaveGame() {
         $game = $this->currentGame();
-        if (!$game) return "PlayerNotInGame";
+        if (! $game) return "PlayerNotInGame";
 
         $leaveResult = $game->leave($this);
         if ($leaveResult !== true) return $leaveResult;
@@ -130,7 +129,7 @@ class User extends Authenticatable
     // Lépés megtétele az aktuális játékban, amennyiben van olyan.
     public function step($row, $col) {
         $game = $this->currentGame();
-        if (!$game) return "PlayerNotInGame";
+        if (! $game) return "PlayerNotInGame";
 
         return $game->step($this, $row, $col);
     }

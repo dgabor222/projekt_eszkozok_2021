@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "d9705996.tighten-lint",
+        "editorconfig.editorconfig",
+        "mikestead.dotenv",
+        "onecentlin.laravel-blade",
+        "onecentlin.laravel5-snippets",
+        "bmewburn.vscode-intelephense-client",
+        "mtxr.sqltools-driver-sqlite",
+        "mtxr.sqltools",
+        "syler.sass-indented",
+        "stef-k.laravel-goto-controller",
+        "codingyu.laravel-goto-view",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "ryannaddy.laravel-artisan"
+    ]
+}
