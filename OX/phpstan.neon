@@ -1,0 +1,15 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    # Elegendo csak az app mappat vizsgalni, a fobb kod ott talalhato
+    paths:
+        - app
+
+    # Az elemzes szintje, 8 a legmagasabb
+    level: 5
+
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
+
+    checkMissingIterableValueType: false
