@@ -7,7 +7,6 @@ on:
 jobs:
   # 1. lepes: Statikus analizis futtatasa.
   static-analysis:
-    needs: setup-environment
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,7 +24,7 @@ jobs:
 
   # 2. lepes: Unit testek futtatasa.
   laravel-tests:
-    needs: setup-environment
+    needs: static-analysis
     runs-on: ubuntu-latest
     defaults:
       run:
