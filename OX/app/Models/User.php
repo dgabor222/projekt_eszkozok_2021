@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * App\Models\User
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game[] $createdGames
+ * @property-read int|null $created_games_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game[] $gamesWhereFirstPlayer
+ * @property-read int|null $games_where_first_player_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game[] $gamesWhereSecondPlayer
+ * @property-read int|null $games_where_second_player_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game[] $winnedGames
+ * @property-read int|null $winned_games_count
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;

@@ -5,6 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+/**
+ * App\Models\Game
+ *
+ * @property-read \App\Models\User $createdBy
+ * @property-read \App\Models\User $firstPlayer
+ * @property-read \App\Models\User $latestPlayer
+ * @property-read \App\Models\User $secondPlayer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
+ * @property-read \App\Models\User $winnedBy
+ * @method static \Database\Factories\GameFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Game newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Game query()
+ * @mixin \Eloquent
+ */
 class Game extends Model
 {
     use HasFactory;
@@ -89,9 +106,9 @@ class Game extends Model
             $player = $step->player;
             $col = $step->col-1;
             $row = $step->row-1;
-            if ($player && $player->is($this->firstPlayer)) {
+            if ($player->is($this->firstPlayer)) {
                 $matrix[$row][$col] = self::FirstPlayerNumber;
-            } else if ($player && $player->is($this->secondPlayer)) {
+            } else if ($player->is($this->secondPlayer)) {
                 $matrix[$row][$col] = self::SecondPlayerNumber;
             }
         });
