@@ -5,7 +5,8 @@ on:
       - 'OX/**'
 
 jobs:
-  laravel-tests:
+  # 1. lepes: Composer, npm fuggosegek telepitese, adatbazis letrehozasa es feltoltese.
+  setup-environment:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,5 +17,29 @@ jobs:
         run: |
           chmod +x ./setup_linux.sh
           ./setup_linux.sh
+
+  # 2. lepes: Statikus analizis futtatasa.
+  static-analysis:
+    needs: setup-environment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./OX
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run static analysis
+        run: |
+          chmod +x ./vendor/bin/phpstan
+          ./vendor/bin/phpstan analyse --no-interaction --memory-limit=256M
+
+  # 3. lepes: Unit testek futtatasa.
+  laravel-tests:
+    needs: setup-environment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./OX
+    steps:
+      - uses: actions/checkout@v2
       - name: Run PHPUnit tests
         run: php artisan test
