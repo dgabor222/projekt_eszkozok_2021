@@ -1,5 +1,7 @@
 # Amőba játék
 
+![ci badge](https://github.com/dgabor222/projekt_eszkozok_2021/actions/workflows/ci.yml/badge.svg)
+
 ## Projekt eszközök beadandó
 
 A tárgy során fejlesztett projektünk terveink szerint egy olyan webes alkalmazást valósít meg, amely lehetővé teszi, hogy amőba játékot játsszunk más felhasználókkal, vagy akár vendégekkel. Emellett biztosít minimális adminisztrációs eszközöket is.
