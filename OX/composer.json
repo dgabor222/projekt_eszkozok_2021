@@ -14,7 +14,8 @@
         "laravel/tinker": "^2.6",
         "laravel/ui": "^3.2",
         "tightenco/tlint": "^6.0",
-        "barryvdh/laravel-ide-helper": "^2.10"
+        "barryvdh/laravel-ide-helper": "^2.10",
+        "ext-pdo_sqlite": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
