@@ -1,2 +1,2 @@
-release: ./heroku.sh
+release: chmod u+x heroku.sh && ./heroku.sh
 web: vendor/bin/heroku-php-apache2 public/
