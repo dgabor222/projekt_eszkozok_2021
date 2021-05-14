@@ -51,7 +51,10 @@
         ],
         "post-install-cmd": [
             "php artisan clear-compiled",
-            "chmod -R 777 public/"
+            "chmod -R 777 public/",
+            "touch database/database.sqlite",
+            "php artisan migrate:fresh --ansi --no-interaction --force",
+            "php artisan db:seed --ansi --no-interaction --force"
         ]
     },
     "extra": {
