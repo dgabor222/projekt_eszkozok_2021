@@ -31,5 +31,6 @@
     },
     "dependencies": {
         "date-and-time": "^1.0.0"
-    }
+    },
+    "postinstall": "npm run production"
 }
