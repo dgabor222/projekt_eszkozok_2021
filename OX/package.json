@@ -7,7 +7,9 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "postinstall": "npm run production",
+        "build": "npm run production"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
@@ -31,7 +33,5 @@
     },
     "dependencies": {
         "date-and-time": "^1.0.0"
-    },
-    "postinstall": "npm run production",
-    "build": "npm run production"
+    }
 }
