@@ -15,11 +15,11 @@
         "laravel/ui": "^3.2",
         "tightenco/tlint": "^6.0",
         "barryvdh/laravel-ide-helper": "^2.10",
+        "fakerphp/faker": "^1.9.1",
         "ext-pdo_sqlite": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
-        "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
