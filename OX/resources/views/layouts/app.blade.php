@@ -46,7 +46,7 @@
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-                            
+
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -79,6 +79,27 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+        <footer class="container mb-5">
+            <hr>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h4>Készítette</h4>
+                    <ul>
+                        <li>Gabor Dukai</li>
+                        <li>Peter Racz</li>
+                        <li>Benedek Amberboy</li>
+                    </ul>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <h4>GitHub</h4>
+                    <p>A projekt megtalálható a GitHub-on</p>
+                    <img src="{{ asset('images/octocat.png' )}}" width="30" height="30" alt=""> <a href="https://github.com/dgabor222/projekt_eszkozok_2021" target="_blank">https://github.com/dgabor222/projekt_eszkozok_2021</a>
+                </div>
+
+            </div>
+        </footer>
     </div>
 </body>
 </html>

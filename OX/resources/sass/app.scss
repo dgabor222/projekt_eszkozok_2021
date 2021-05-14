@@ -2,7 +2,44 @@
 //@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-@import 'variables';
+@import "variables";
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+
+// Játéktér
+.square:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+    position: relative;
+}
+
+.square-x:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: "X";
+    color: blue;
+    font-size: 3vh;
+}
+
+.square-o:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: "O";
+    color: red;
+    font-size: 3vh;
+}
+
+.row > .square.disabled {
+    background-color: rgb(212, 212, 212);
+}
+
+.row > .square {
+    font-weight: bold;
+    border: 1px solid grey;
+}

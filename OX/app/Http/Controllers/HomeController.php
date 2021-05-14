@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
+use App\Models\User;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -12,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**
@@ -22,6 +25,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $id = Auth::id();
+        $waiting_games = Game::where('status', '=', 'WAITING')->get();
+        $current_game = User::find($id)->currentGame();
+        return view('home', [
+            'current_game' => $current_game,
+            'waiting_games' => $waiting_games,
+        ]);
     }
 }
