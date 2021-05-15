@@ -6,17 +6,18 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-pdo_sqlite": "*",
+        "barryvdh/laravel-ide-helper": "^2.10",
+        "fakerphp/faker": "^1.9.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "larasocket/larasocket-driver": "^1.0",
         "laravel/framework": "^8.12",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",
         "laravel/ui": "^3.2",
-        "tightenco/tlint": "^6.0",
-        "barryvdh/laravel-ide-helper": "^2.10",
-        "fakerphp/faker": "^1.9.1",
-        "ext-pdo_sqlite": "*"
+        "tightenco/tlint": "^6.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

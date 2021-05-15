@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StepEvent;
 use App\Models\Game;
 use App\Models\User;
 use Auth;
@@ -98,11 +99,10 @@ class GamesController extends Controller
         if (! $game) {
             return response()->json(['error' => 'A játék nem található'], 404);
         }
-        $map = $game->getMapAsMatrix();
-        $steps = $game->steps;
         return response()->json([
-            'map' => $map,
-            'steps' => $steps,
+            'map' =>  $game->getMapAsMatrix(),
+            'steps' => $game->steps,
+            'status' => $game->status,
         ], 200);
     }
 
@@ -111,24 +111,36 @@ class GamesController extends Controller
         $col = $request->col;
         //---------------
         $id = Auth::id();
+        $game = User::find($id)->currentGame();
         $res = User::find($id)->step($row,$col);
+        $win = false;
+        $tie = false;
         if ($res !== true) {
             if (is_string($res)) {
-                return response()->json([
-                    'error' => $res,
-                ], 400);
+                if ($res === 'GameWinned') {
+                    $win = true;
+                } else if ($res === 'GameTied') {
+                    $tie = true;
+                } else {
+                    return response()->json([
+                        'error' => $res,
+                    ], 400);
+                }
             } else {
                 error_log($res);
                 // stringnek vagy boolnak kéne jönni
                 return abort(500);
             }
         }
-        $game = User::find($id)->currentGame();
+        $game->refresh();
         $map = $game->getMapAsMatrix();
         $steps = $game->steps;
+        broadcast(new StepEvent($game->id))->toOthers();
         return response()->json([
             'map' => $map,
             'steps' => $steps,
+            'win' => $win,
+            'tie' => $tie,
         ], 200);
     }
 

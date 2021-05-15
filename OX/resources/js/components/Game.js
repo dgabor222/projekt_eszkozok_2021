@@ -28,6 +28,41 @@ function Game(props) {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 
+    Echo.private('step')
+        .listen('StepEvent', (e) => {
+            console.log('StepEvent', e.gameId, props.gameId);
+            if (parseInt(e.gameId) === parseInt(props.gameId)) {
+                console.log('fetch');
+                axios.get(`/games/${props.gameId}/fetch`)
+                .then(function (resp) {
+                    setLoading(false);
+                    setGameMap(resp.data.map);
+                    let temp = [];
+                    for (let step of resp.data.steps) {
+                        console.log(step);
+                        temp.push({
+                            time: new Date(step.created_at),
+                            message: `${step.player.name} a(z) ${step.row}. sor ${step.col}. mezőjére lépett`,
+                            error: false,
+                        });
+                    }
+                    if (temp) {
+                        setInfos(temp);
+                    }
+                    if (resp.data.status === 'WINNED') {
+                        addInfoEntry("Győzelem! Vége a játéknak.", true);
+                        setEnded(true);
+                    } else if (resp.data.status === 'TIED') {
+                        addInfoEntry("Döntetlen! Vége a játéknak.", true);
+                        setEnded(true);
+                    }
+                }).catch(function (err) {
+                    setLoading(false);
+                    addInfoEntry(err.response.data.error, true);
+                });
+            }
+        });
+
     if (loading) {
         axios.get(`/games/${props.gameId}/fetch`)
         .then(function (resp) {
@@ -74,7 +109,7 @@ function Game(props) {
     }
 
     function handleClick(row, col) {
-        if (givedUp || stepped || loading) return;
+        if (givedUp || stepped || ended || loading) return;
         if (gameMap[row-1][col-1] !== 0) {
             addInfoEntry('UnavailablePosition');
             return;
@@ -100,9 +135,17 @@ function Game(props) {
             if (temp) {
                 setInfos(temp);
             }
+            if (resp.data.win === true) {
+                addInfoEntry("Győzelem! Vége a játéknak.", true);
+                setEnded(true);
+            } else if (resp.data.tie === true) {
+                addInfoEntry("Döntetlen! Vége a játéknak.", true);
+                setEnded(true);
+            }
             setStepped(false);
         }).catch(function (err) {
-            addInfoEntry(err.response.data.error, true);
+            const errData = err.response.data.error;
+            addInfoEntry(errData, true);
             setStepped(false);
         });
     }

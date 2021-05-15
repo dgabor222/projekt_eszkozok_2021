@@ -16,6 +16,7 @@
         <p>Ezekhez a játékokhoz jelenleg egy ember van csatlakozva, így ha a rákattintasz a Csatlakozás gombra, akkor meglesz a létszám, és a játék el tud kezdődni.</p>
         @if (count($waiting_games) < 1)
             <p>Jelenleg nincsenek nyitott játékok.</p>
+            <a class="btn btn-lg btn-primary" href="{{ route('games.create') }}">Új játék létrehozása</a>
         @else
             <table class="table">
                 <thead>
